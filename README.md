@@ -1,5 +1,5 @@
 # yt-livestream-grabber
-scrapes youtube to check if user live if so then it'll download the stream.
+scrapes youtube to check if user live if so then it'll download the stream. setup cronjob for this for max automation.
 
 # Linux Usage
 
