@@ -8,6 +8,7 @@ from re import sub, finditer
 
 channel = sys.argv[1]
 username = sys.argv[2]
+stream_folder = sys.argv[3]
 filename = channel + ".ts"
 live_video_link = " "
 
@@ -48,7 +49,7 @@ if os.path.isfile(username + "_LIVE") == False:
                 live_video_link = indice['href']
                 break
         # print(filename + " " + live_video_link)    
-        command = '"streamlink ' + '--hls-live-restart ' + '-o ' + ' "/home/jd/Syncthing/Videos/Streams/' + filename + '.ts" "' + live_video_link + '" best"'
+        command = '"streamlink ' + '--hls-live-restart ' + '-o ' +  stream_folder + filename + '.ts" "' + live_video_link + '" best"'
         
         print(command)
 
