@@ -49,7 +49,7 @@ if os.path.isfile(username + "_LIVE") == False:
                 live_video_link = indice['href']
                 break
         # print(filename + " " + live_video_link)    
-        command = '"streamlink ' + '--hls-live-restart ' + '-o ' +  stream_folder + filename + '.ts" "' + live_video_link + '" best"'
+        command = '"streamlink ' + '--hls-live-restart ' + '-o "' +  stream_folder + filename + '.ts" "' + live_video_link + '" best"'
         
         print(command)
 
