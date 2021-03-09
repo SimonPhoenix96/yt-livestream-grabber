@@ -21,9 +21,13 @@ soup = BeautifulSoup(page.text, 'html.parser')
 spec = soup.find_all("script")
 
 live = False
-
+# SHOWS THAT USER IS LIVE YTT CHANGES THIS I THINK
+# {"text":"LIVE"}
+# {"iconType":"LIVE"}
 for i in range(0, len(spec)):
-    if str(spec[i]).find('{"text":"LIVE"}') != -1: 
+    # print(str(spec[i]))
+    # print(str(spec[i].find('{"iconType":"LIVE"}')))
+    if (str(spec[i]).find('{"iconType":"LIVE"}') or str(spec[i]).find('{"iconType":"LIVE"}')) != -1: 
         live = True
         break
 
@@ -53,7 +57,7 @@ if os.path.isfile(username + "_LIVE") == False:
         
         print(command)
 
-        subprocess.call(command)
+        subprocess.call(command, shell=True)
         
         f = open(username + "_LIVE", "w")
         f.write(username + " is live")
@@ -64,6 +68,5 @@ if os.path.isfile(username + "_LIVE") == False:
 if live != True and os.path.isfile(username + "_LIVE"):
     print(username + " is not live so delete LIVE Marker file!")
     os.remove(username + "_LIVE")
-
 
 
