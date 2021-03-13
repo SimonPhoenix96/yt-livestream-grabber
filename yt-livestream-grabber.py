@@ -4,14 +4,13 @@ import subprocess
 import sys
 import os
 from re import sub, finditer
-
+from datetime import datetime
 
 channel = sys.argv[1]
 username = sys.argv[2]
 stream_folder = sys.argv[3]
-filename = channel + ".ts"
+filename = channel + "_" + str(datetime.now().today()).replace(" ", "_")
 live_video_link = " "
-
 url = "https://www.youtube.com/channel/" + channel
 
 s = requests.session()
@@ -21,6 +20,7 @@ soup = BeautifulSoup(page.text, 'html.parser')
 spec = soup.find_all("script")
 
 live = False
+
 # SHOWS THAT USER IS LIVE YTT CHANGES THIS I THINK
 # {"text":"LIVE"}
 # {"iconType":"LIVE"}
@@ -31,11 +31,11 @@ for i in range(0, len(spec)):
         live = True
         break
 
-if os.path.isfile(username + "_LIVE") == False:
+if os.path.isfile(stream_folder + username + "_LIVE") == False:
 
     if live:
         
-        print(username + " is live! downloading stream")
+        print(username + " is live!")
         
         live_video_page = s.get('https://www.youtube.com/channel/' + channel + '/live')
         live_video_page_soup = BeautifulSoup(live_video_page.text, 'html.parser')
@@ -53,20 +53,20 @@ if os.path.isfile(username + "_LIVE") == False:
                 live_video_link = indice['href']
                 break
         # print(filename + " " + live_video_link)    
-        command = '"streamlink ' + '--hls-live-restart ' + '-o "' +  stream_folder + filename + '.ts" "' + live_video_link + '" best"'
-        
-        print(command)
-
-        subprocess.call(command, shell=True)
-        
-        f = open(username + "_LIVE", "w")
-        f.write(username + " is live")
+        #command = '"/usr/bin/streamlink ' + '--hls-live-restart ' + '-o "' +  stream_folder + 'carliii' + '.ts" "' + live_video_link + '" best"'
+        #filename
+#        print(str(command))
+        command = '/usr/bin/streamlink -Q  --hls-live-restart -o "' + stream_folder + filename + '.ts" "' + live_video_link + '" best'
+        subprocess.run(command, shell=True)
+#        print(str(command))
+        f = open(stream_folder + username + "_LIVE", "w")
         f.close()
     else: 
         print(username + " is not live!")    
 
-if live != True and os.path.isfile(username + "_LIVE"):
+if live != True and os.path.isfile(stream_folder + username + "_LIVE"):
     print(username + " is not live so delete LIVE Marker file!")
-    os.remove(username + "_LIVE")
+    os.remove(stream_folder + username + "_LIVE")
 
-
+if live == True and os.path.isfile(stream_folder + username + "_LIVE"):
+    print(username + "'s stream is currently being downloaded!")
