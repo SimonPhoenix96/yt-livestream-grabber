@@ -15,54 +15,44 @@ url = "https://www.youtube.com/channel/" + channel
 
 s = requests.session()
 page = s.get(url)
-
 soup = BeautifulSoup(page.text, 'html.parser')
 spec = soup.find_all("script")
 
 live = False
 
-# SHOWS THAT USER IS LIVE YTT CHANGES THIS I THINK
-# {"text":"LIVE"}
+# UNIQUE LIVE INDICATION THAT USER IS LIVE YT CHANGES THIS I THINK
+# {"text":"Live"}
 # {"iconType":"LIVE"}
 for i in range(0, len(spec)):
-    # print(str(spec[i]))
-    # print(str(spec[i].find('{"iconType":"LIVE"}')))
-    if (str(spec[i]).find('{"iconType":"LIVE"}') or str(spec[i]).find('{"iconType":"LIVE"}')) != -1: 
+    if (str(spec).find('{"text":"Live"}') + str(spec).find('{"iconType":"LIVE"}') != -2):
         live = True
         break
-
 if os.path.isfile(stream_folder + username + "_LIVE") == False:
 
     if live:
-        
-        print(username + " is live!")
-        
+
+        msg_streamer_live = username + " is live!"
+
         live_video_page = s.get('https://www.youtube.com/channel/' + channel + '/live')
         live_video_page_soup = BeautifulSoup(live_video_page.text, 'html.parser')
-        filename = live_video_page_soup.find_all("title")[0].text.replace(" - YouTube" , "")  
-        
-        # print(filename[0].text)
+        filename = live_video_page_soup.find_all("title")[0].text.replace(" - YouTube" , "")
 
         potential_link = live_video_page_soup.find_all("link")
-        # print(str(live_video_id).find("https://www.youtube.com/watch?v="))
 
         for indice in potential_link:
-            # print(indice['href'])
-            if indice['href'].find('watch?v=') != -1: 
+            if indice['href'].find('watch?v=') != -1:
                 # add index where teaser html attribute starts to index where specific thread id starts
                 live_video_link = indice['href']
                 break
-        # print(filename + " " + live_video_link)    
-        #command = '"/usr/bin/streamlink ' + '--hls-live-restart ' + '-o "' +  stream_folder + 'carliii' + '.ts" "' + live_video_link + '" best"'
-        #filename
-#        print(str(command))
-        command = '/usr/bin/streamlink -Q  --hls-live-restart -o "' + stream_folder + filename + '.ts" "' + live_video_link + '" best'
+
+        command = 'echo "' + msg_streamer_live + '" && /usr/bin/streamlink -Q --force --hls-live-restart -o "' + stream_folder + filename + '.ts" "' + live_video_link + '" 720p'
+        # print(msg_streamer_live)
+        # command = '/usr/bin/streamlink -Q --force --hls-live-restart -o "' + stream_folder + filename + '.ts" "' + live_video_link + '" 720p'
         subprocess.run(command, shell=True)
-#        print(str(command))
         f = open(stream_folder + username + "_LIVE", "w")
         f.close()
-    else: 
-        print(username + " is not live!")    
+    else:
+        print(username + " is not live!")
 
 if live != True and os.path.isfile(stream_folder + username + "_LIVE"):
     print(username + " is not live so delete LIVE Marker file!")
